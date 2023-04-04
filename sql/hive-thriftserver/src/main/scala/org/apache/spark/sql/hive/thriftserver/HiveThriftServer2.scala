@@ -153,10 +153,23 @@ private[hive] class HiveThriftServer2(sqlContext: SQLContext)
   override def start(): Unit = {
     super.start()
     started.set(true)
+
+//   配置thrift 负载均衡 加入hiveconf配置
+    hiveConf.set(HiveConf.ConfVars.HIVE_SERVER2_THRIFT_BIND_HOST.varname, getServerHost)
+    if (this.hiveConf.getBoolVar(
+      ConfVars.HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY)) {
+      invoke(classOf[HiveServer2], this, "addServerInstanceToZooKeeper",
+        classOf[HiveConf] -> this.hiveConf)
+    }
   }
 
   override def stop(): Unit = {
     if (started.getAndSet(false)) {
+      //   配置thrift 负载均衡 移除hiveconf配置
+      if (this.hiveConf.getBoolVar(
+        ConfVars.HIVE_SERVER2_SUPPORT_DYNAMIC_SERVICE_DISCOVERY)) {
+        invoke(classOf[HiveServer2], this, "removeServerInstanceFromZooKeeper")
+      }
        super.stop()
     }
   }

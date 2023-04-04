@@ -107,6 +107,7 @@
     <module>external/kafka-0-10-sql</module>
     <module>external/avro</module>
     <!-- See additional modules enabled by profiles below -->
+    <module>sql/hive-thriftserver</module>
   </modules>
 
   <properties>
@@ -2594,7 +2595,8 @@
           <groupId>net.alchim31.maven</groupId>
           <artifactId>scala-maven-plugin</artifactId>
           <!-- SPARK-36547: Please don't upgrade the version below, otherwise there will be an error on building Hadoop 2.7 package -->
-          <version>4.3.0</version>
+<!--          <version>4.3.0</version>-->
+          <version>4.5.6</version>
           <executions>
             <execution>
               <id>eclipse-add-source</id>
